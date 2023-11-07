@@ -3,13 +3,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import com.likemario.game.MarioBros;
 
-public class Mario extends Sprite {
+public class Goku extends Sprite {
     public World world;
     public Body b2body;
 
-    public Mario(World world) {
+    public Goku(World world) {
         this.world = world;
         defineMario();
+
+
     }
 
     public void defineMario() {
@@ -20,7 +22,9 @@ public class Mario extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(5 / MarioBros.PPM);
+        shape.setRadius(10 / MarioBros.PPM);
+
+
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
