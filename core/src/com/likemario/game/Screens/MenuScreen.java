@@ -46,22 +46,26 @@ public class MenuScreen implements Screen {
 
         stage = new Stage();
 
-
         Table table = new Table();
-        table.top();
+        table.center();
         table.setFillParent(true);
 
-        title = new Label("MAKU", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        mensagem = new Label("PRESSIONE ENTER PARA CONTINUAR!", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        Label.LabelStyle titleStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        titleStyle.font.getData().setScale(3.0f);
+
+        title = new Label("MAKU", titleStyle);
+
+        Label.LabelStyle mensagemStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+
+        mensagem = new Label("PRESSIONE ENTER PARA CONTINUAR!", mensagemStyle);
 
         table.add(title).expandX().padTop(16);
         table.row();
         table.add(mensagem).expandX().padTop(16);
 
         stage.addActor(table);
-
-
     }
+
 
     @Override
     public void show() {

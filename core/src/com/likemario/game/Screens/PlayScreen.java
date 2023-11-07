@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -16,13 +17,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.likemario.game.MarioBros;
+import com.likemario.game.Scenes.Hud;
 import com.likemario.game.Sprites.Goku;
 
 public class PlayScreen implements Screen {
     private MarioBros game;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
-//    private Hud hud;
+    private Hud hud;
 
     //tiled map
     private TmxMapLoader mapLoader;
@@ -39,14 +41,14 @@ public class PlayScreen implements Screen {
         this.game = game;
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT / MarioBros.PPM, gameCam);
-//        hud = new Hud(game.batch);
+        hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
         gameCam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
 
-        world = new World(new Vector2(0, -500 / MarioBros.PPM), true);
+        world = new World(new Vector2(10 / MarioBros.PPM, -500 / MarioBros.PPM), true);
         b2dr = new Box2DDebugRenderer();
 
         player = new Goku(world);
@@ -130,19 +132,36 @@ public class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            player.b2body.applyLinearImpulse(new Vector2(0, 0.2f), player.b2body.getWorldCenter(), true);
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+            player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+        }
 
     }
 
-    public void update (float dt) {
+    public void update(float dt) {
         handleInput(dt);
 
         world.step(1/60f, 6, 2);
 
-        gameCam.position.x = player.b2body.getPosition().x;
+        float targetX = (float) 0.4 + player.b2body.getPosition().x;
+        float targetY = (float) 0.3 + player.b2body.getPosition().y;
+
+        float lerpSpeed = 3.0f;
+
+        // Interpola a posição da câmera suavemente
+        float newX = MathUtils.lerp(gameCam.position.x, targetX, lerpSpeed * dt);
+        float newY = MathUtils.lerp(gameCam.position.y, targetY, lerpSpeed * dt);
+
+        gameCam.position.x = newX;
+        gameCam.position.y = newY;
 
         gameCam.update();
         renderer.setView(gameCam);
     }
+
 
     @Override
     public void render(float delta) {
@@ -154,12 +173,12 @@ public class PlayScreen implements Screen {
 
         b2dr.render(world, gameCam.combined);
 
-//        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-//        hud.stage.draw();
-//        game.batch.begin();
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
+        game.batch.begin();
 
 
-//        game.batch.end();
+        game.batch.end();
     }
 
     @Override
