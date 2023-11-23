@@ -7,20 +7,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.likemario.game.MarioBros;
 
 
-import java.awt.*;
 
-public class Hud {
+public class Hud implements Disposable {
     public Stage stage;
     private Viewport viewport;
 
     private Integer worldTimer;
 
-    private float timeCount;
     private Integer score;
 
     Label countdownLabel;
@@ -32,7 +31,6 @@ public class Hud {
 
     public Hud(SpriteBatch sb) {
         worldTimer = 300;
-        timeCount = 0;
         score = 0;
 
         viewport = new FitViewport(MarioBros.V_WIDTH, MarioBros.V_HEIGHT, new OrthographicCamera());
@@ -49,15 +47,15 @@ public class Hud {
         worldLabel = new Label("Fase", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         marioLabel = new Label("Goku", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-//        table.add(marioLabel).expandX().padTop(10);
         table.add(worldLabel).expandX().padTop(10);
-//        table.add(timeLabel).expandX().padTop(10);
         table.row();
-//        table.add(scoreLabel).expandX();
         table.add(levelLabel).expandX();
-//        table.add(countdownLabel).expandX();
 
         stage.addActor(table);
     }
 
+    @Override
+    public void dispose() {
+        stage.dispose();
+    }
 }

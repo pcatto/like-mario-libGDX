@@ -90,7 +90,6 @@ public class MenuScreen implements Screen {
 
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Desenha o Stage na tela
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
 
