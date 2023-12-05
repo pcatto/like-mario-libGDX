@@ -198,4 +198,8 @@ public class PlayScreen implements Screen {
 
 
     }
+
+    public MarioBros getGame() {
+        return game;
+    }
 }

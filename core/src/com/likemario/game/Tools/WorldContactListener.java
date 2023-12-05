@@ -16,7 +16,6 @@ public class WorldContactListener implements ContactListener {
             Fixture object = head == fixA ? fixB : fixA;
 
             if (object.getUserData() != null && InteractiveTileObject.class.isAssignableFrom(object.getUserData().getClass())){
-                System.out.println("head hit");
                 ((InteractiveTileObject) object.getUserData()).onHeadHit();
             }
         }

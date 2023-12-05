@@ -175,15 +175,15 @@ public class Goku extends Sprite {
         shape.setAsBox(5 / MarioBros.PPM, 18 / MarioBros.PPM);
 
         fdef.filter.categoryBits = MarioBros.GOKU_BIT;
-        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT;
+        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT | MarioBros.DEATH_BIT;
 
 
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-2 / MarioBros.PPM, 19 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 19 / MarioBros.PPM));
+        EdgeShape head = new EdgeShape(); // retangulo ao redor do player
+        head.set(new Vector2(-5 / MarioBros.PPM, 19 / MarioBros.PPM), new Vector2(5 / MarioBros.PPM, -19 / MarioBros.PPM));
         fdef.shape = head;
         fdef.isSensor = true;
 

@@ -9,6 +9,7 @@ import com.likemario.game.MarioBros;
 import com.likemario.game.Screens.PlayScreen;
 import com.likemario.game.Sprites.Brick;
 import com.likemario.game.Sprites.Coin;
+import com.likemario.game.Sprites.Death;
 
 public class B2WorldCreator {
     public B2WorldCreator(PlayScreen screen) {
@@ -60,6 +61,13 @@ public class B2WorldCreator {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             new Coin(screen, rect);
+        }
+
+        // death
+        for(MapObject object : map.getLayers().get(9).getObjects().getByType(RectangleMapObject.class)) {
+            Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            new Death(screen, rect);
         }
 
     }
