@@ -8,7 +8,7 @@ import com.likemario.game.MarioBros;
 import com.likemario.game.Screens.PlayScreen;
 
 public class Goku extends Sprite {
-    public enum State { FALLING, JUMPING, STANDING, RUNNING };
+    public enum State { FALLING, JUMPING, STANDING, RUNNING, ATTACKING, RUNNINGATTACKING};
     public State currentState;
     public State previousState;
 
@@ -17,9 +17,13 @@ public class Goku extends Sprite {
     private TextureRegion gokuStand;
 
     private Animation gokuRun;
+
+    private Animation gokuAtack;
+    private Animation gokuRunningAtack;
     private Animation gokuJump;
     private float stateTimer;
     public boolean runningRight;
+    public boolean atacking;
 
 
     public Goku(World world, PlayScreen screen) {
@@ -46,9 +50,40 @@ public class Goku extends Sprite {
 
 
         gokuJump = new Animation(0.1f, frames);
+        frames.clear();
+
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack1")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack-stand")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack2")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack3")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack6")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack7")));
+
+        gokuAtack = new Animation(0.1f,frames);
+        frames.clear();
+
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack-running1")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack1")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack-running2")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("kick1")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("kick2")));
+
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack-stand2")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("kick-stand")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("kick3")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack-stand3")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack3")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack4")));
+//        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack5")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack6")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("atack7")));
+
+
+
+
+        gokuRunningAtack = new Animation(0.15f,frames);
 
         gokuStand = new TextureRegion(screen.getAtlas().findRegion("standing"));
-
 
         defineGoku();
         setBounds(0, 0, 26 / MarioBros.PPM, 40 / MarioBros.PPM);
@@ -71,6 +106,12 @@ public class Goku extends Sprite {
             case RUNNING:
                 region = (TextureRegion) gokuRun.getKeyFrame(stateTimer);
                 break;
+            case ATTACKING:
+                region = (TextureRegion) gokuAtack.getKeyFrame(stateTimer, true);
+                break;
+            case RUNNINGATTACKING:
+                region = (TextureRegion) gokuRunningAtack.getKeyFrame(stateTimer, true);
+                break;
             case FALLING:
             case STANDING:
             default:
@@ -78,11 +119,16 @@ public class Goku extends Sprite {
                 break;
         }
 
-        if(currentState == State.RUNNING){
+        if(currentState == State.RUNNING || currentState == State.RUNNINGATTACKING){
             setBounds(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2, 40 / MarioBros.PPM, 40 / MarioBros.PPM);
         }
-        else
+        else if(currentState == State.ATTACKING) {
+            setBounds(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2 - 2 / MarioBros.PPM, 40 / MarioBros.PPM, 40 / MarioBros.PPM);
+        }
+        else{
             setBounds(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2, 26 / MarioBros.PPM, 40 / MarioBros.PPM);
+        }
+
 
 
 
@@ -101,7 +147,11 @@ public class Goku extends Sprite {
     }
 
     public State getState() {
-        if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) {
+        if (b2body.getLinearVelocity().x != 0 && atacking) {
+            return State.RUNNINGATTACKING;
+        } else if (atacking) {
+            return State.ATTACKING;
+        } else if (b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) {
             return State.JUMPING;
         } else if (b2body.getLinearVelocity().y < 0) {
             return State.FALLING;
