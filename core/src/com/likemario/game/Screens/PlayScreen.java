@@ -18,6 +18,7 @@ import com.likemario.game.MarioBros;
 import com.likemario.game.Scenes.Hud;
 import com.likemario.game.Sprites.Goku;
 import com.likemario.game.Tools.B2WorldCreator;
+import com.likemario.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
 
@@ -57,6 +58,8 @@ public class PlayScreen implements Screen {
 
         player = new Goku(world, this);
 
+        world.setContactListener(new WorldContactListener());
+
 
 
 
@@ -72,8 +75,10 @@ public class PlayScreen implements Screen {
     }
 
     public void handleInput(float dt) {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            player.b2body.applyLinearImpulse(new Vector2(0, 2f), player.b2body.getWorldCenter(), true);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            if(player.currentState != Goku.State.JUMPING && player.currentState != Goku.State.FALLING){
+                player.b2body.applyLinearImpulse(new Vector2(0, 3f), player.b2body.getWorldCenter(), true);
+            }
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2) {
             player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
@@ -81,11 +86,17 @@ public class PlayScreen implements Screen {
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2) {
             player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 0.2f), player.b2body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            if(player.currentState == Goku.State.JUMPING || player.currentState == Goku.State.FALLING)
+                player.b2body.applyLinearImpulse(new Vector2(0, 0.15f), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-            player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.X)) {
+            if(player.runningRight){
+                player.b2body.applyLinearImpulse(new Vector2(1f, 0), player.b2body.getWorldCenter(), true);
+            }
+            else {
+                player.b2body.applyLinearImpulse(new Vector2(-1f, 0), player.b2body.getWorldCenter(), true);
+            }
         }
 
     }
