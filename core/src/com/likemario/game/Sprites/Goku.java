@@ -2,6 +2,7 @@ package com.likemario.game.Sprites;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.likemario.game.MarioBros;
@@ -22,9 +23,9 @@ public class Goku extends Sprite {
     public boolean runningRight;
 
 
-    public Goku(World world, PlayScreen screen) {
+    public Goku(PlayScreen screen) {
         super(screen.getAtlas().findRegion("standing"));
-        this.world = world;
+        this.world = screen.getWorld();
 
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -43,6 +44,7 @@ public class Goku extends Sprite {
         frames.add(new TextureRegion(screen.getAtlas().findRegion("jumping2")));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("jumping3")));
         frames.add(new TextureRegion(screen.getAtlas().findRegion("jumping4")));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("jumping1")));
 
 
         gokuJump = new Animation(0.1f, frames);
@@ -120,14 +122,22 @@ public class Goku extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape shape = new PolygonShape();
+        shape.setAsBox(5 / MarioBros.PPM, 18 / MarioBros.PPM);
 
-        shape.setAsBox(6 / MarioBros.PPM, 18 / MarioBros.PPM);
+        fdef.filter.categoryBits = MarioBros.GOKU_BIT;
+        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT;
+
+
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
         EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-2 / MarioBros.PPM, 19 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 19 / MarioBros.PPM));
+        fdef.shape = head;
+        fdef.isSensor = true;
 
+        b2body.createFixture(fdef).setUserData("head");
 
     }
 }

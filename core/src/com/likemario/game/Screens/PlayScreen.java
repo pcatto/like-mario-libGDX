@@ -54,9 +54,9 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(10 / MarioBros.PPM, -500 / MarioBros.PPM), true);
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
 
-        player = new Goku(world, this);
+        player = new Goku(this);
 
         world.setContactListener(new WorldContactListener());
 
@@ -160,6 +160,14 @@ public class PlayScreen implements Screen {
         gameCam.position.set(gamePort.getWorldWidth()/2, gamePort.getWorldHeight()/2, 0);
         gameCam.update();
         game.batch.setProjectionMatrix(gameCam.combined);
+    }
+
+    public TiledMap getMap() {
+        return map;
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     @Override
